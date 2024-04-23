@@ -1,3 +1,16 @@
 {
-	"name": "UnityEvent2"
+    "name": "UnityEvent2Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0a8c39ba9a2074cdf8aca1f7884fc74e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -1,0 +1,23 @@
+{
+    "name": "com.virendra531.unityevent2",
+    "version": "0.1.0",
+    "unity": "2020.1",
+    "displayName": "Unity Event 2",
+    "type": "tool",
+    "description": "A more feature rich UnityEvent",
+    "keywords": [
+        "Unity Event",
+        "UnityEvent2"
+    ],
+    "author": {
+        "name": "Virendra Kumar"
+    },
+    "samples": [
+        {
+            "displayName": "Sample",
+            "description": "Example of how to use UnityEvent2",
+            "path": "Example~/Samples"
+        }
+    ],
+    "hideInEditor": false
+}
