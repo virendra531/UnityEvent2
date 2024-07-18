@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 using UnityEngine.Events;
@@ -297,35 +297,46 @@ public static class ReflectionExtension {
             propertyInfo.SetValue(firstValue, secondValue, null);
         }
     }
+    
     public static void SetParametersValue(ref Parameters[] parameters, ParameterInfo[] methodParameters) {
-        for (int x = 0; x < parameters.Length; x++) {
-            if (parameters[x].unityObj == null || parameters[x].giveParameterAs == ValueOrGM.Value) {
-                parameters[x].stringArg.valueType = methodParameters[x].ParameterType;
-                parameters[x].returnType = methodParameters[x].ParameterType; continue;
-            }
-            ReflectionExtension.putSelectedValue(ref parameters[x].selectedField, parameters[x].unityObj, parameters[x].selectField);
-            ReflectionExtension.putSelectedValue(ref parameters[x].selectedProperty, parameters[x].unityObj, parameters[x].selectField);
+    for (int x = 0; x < parameters.Length; x++) {
+        // Ensure x is within the bounds of methodParameters
+        if (x >= methodParameters.Length) {
+            continue; // Or handle this scenario appropriately
+        }
 
-            ReflectionExtension.putSelectedValue(ref parameters[x].selectedMethodInfo,
-                                                 ref parameters[x].methodParamTypes,
-                                                 ref parameters[x].returnType,
-                                                 parameters[x].unityObj, parameters[x].selectField);
+        if (parameters[x].unityObj == null || parameters[x].giveParameterAs == ValueOrGM.Value) {
+            parameters[x].stringArg.valueType = methodParameters[x].ParameterType;
+            parameters[x].returnType = methodParameters[x].ParameterType;
+            continue;
+        }
 
-            if (parameters[x].selectedMethodInfo != null) {
-                parameters[x].returnType = parameters[x].selectedMethodInfo.ReturnType;
-                ParameterInfo[] paramMethodParam = parameters[x].selectedMethodInfo.GetParameters();
-                if (paramMethodParam.Length != 0) {
-                    List<Type> paramMethodAllTypes = new List<Type>();
-                    for (int y = 0; y < paramMethodParam.Length; y++) {
-                        paramMethodAllTypes.Add(paramMethodParam[y].ParameterType);
+        ReflectionExtension.putSelectedValue(ref parameters[x].selectedField, parameters[x].unityObj, parameters[x].selectField);
+        ReflectionExtension.putSelectedValue(ref parameters[x].selectedProperty, parameters[x].unityObj, parameters[x].selectField);
 
+        ReflectionExtension.putSelectedValue(ref parameters[x].selectedMethodInfo,
+                                             ref parameters[x].methodParamTypes,
+                                             ref parameters[x].returnType,
+                                             parameters[x].unityObj, parameters[x].selectField);
+
+        if (parameters[x].selectedMethodInfo != null) {
+            parameters[x].returnType = parameters[x].selectedMethodInfo.ReturnType;
+            ParameterInfo[] paramMethodParam = parameters[x].selectedMethodInfo.GetParameters();
+            if (paramMethodParam.Length != 0) {
+                List<Type> paramMethodAllTypes = new List<Type>();
+                for (int y = 0; y < paramMethodParam.Length; y++) {
+                    paramMethodAllTypes.Add(paramMethodParam[y].ParameterType);
+
+                    // Ensure x is within the bounds of selectFunctionParameters
+                    if (x < parameters[x].selectFunctionParameters.Length) {
                         parameters[x].selectFunctionParameters[x].valueType = paramMethodParam[y].ParameterType;
                     }
-                    parameters[x].methodParamTypes = paramMethodAllTypes.ToArray();
                 }
+                parameters[x].methodParamTypes = paramMethodAllTypes.ToArray();
             }
         }
     }
+}
     public static IEnumerable<MethodInfo> GetExtensionMethods(Assembly assembly, Type extType, string methodName) {
         IEnumerable<MethodInfo> query = from type in assembly.GetTypes()
                                         where type.IsSealed && !type.IsGenericType && !type.IsNested
